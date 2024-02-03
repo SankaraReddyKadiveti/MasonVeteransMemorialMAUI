@@ -1,0 +1,41 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom="clr-namespace:MasonVeteransMemorial"             
+             x:Class="MasonVeteransMemorial.App">
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- Converter Styles -->
+            <custom:EmptyStringToVisibleConverter x:Key="EmptyStringToVisible" />
+            <custom:NegateBooleanConverter x:Key="Negate" />
+
+            <!-- Colors -->
+            <Color x:Key="DefaultBorderColor">#b8b8b8</Color>
+            <Color x:Key="MediumBackgroundColor">#d3d3d3</Color>
+            <Color x:Key="LightBackgroundColor">#f5f5f5</Color>
+            <Color x:Key="DefaultTextColor">#333333</Color>
+            <Color x:Key="NavTitleBackgroundColor">#ffffff</Color>
+            <Color x:Key="NavTitleTextColor">#333333</Color>
+            <Color x:Key="DefaultLightTextColor">#666666</Color>
+            <Color x:Key="SelectedItemColor">#0091cd</Color>
+            <Color x:Key="HeadingTextColor">#005a84</Color>
+
+            <!-- Dividers -->
+            <Style x:Key="TopPageDividerStyle" TargetType="BoxView" >
+                <Style.Setters>
+                    <Setter Property="IsVisible">
+                        <Setter.Value>
+                            <OnPlatform x:TypeArguments="x:Boolean" />
+                        </Setter.Value>
+                    </Setter>
+                </Style.Setters>
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,199 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<OutputType>Exe</OutputType>
+		<RootNamespace>MasonVeteransMemorial</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Display name -->
+		<ApplicationTitle>MasonVeteransMemorial</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.masonveteransmemorial</ApplicationId>
+		<ApplicationIdGuid>94b0d77d-ccdd-4410-a224-18dc7646fbd0</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon BaseSize="50,50"-->
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Resize="false" BaseSize="10,10" />
+
+		<!-- Splash Screen BaseSize="160,160" -->
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Resize="false" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Include="Resources\Raw\MemorialBricks.csv" />
+	</ItemGroup>	
+
+	<!--<ItemGroup>
+	  <None Remove="Data\background_for_blur.png" />
+	  <None Remove="Data\drone_pu_4_overhead_90.png" />
+	  <None Remove="Data\drone_pu_4_overhead_view.jpg" />
+	  <None Remove="Data\drone_pu_4_overhead_view.png" />
+	  <None Remove="Data\initial_startup_grounds.png" />
+	  <None Remove="Data\initial_startup_grounds_v2_620.png" />
+	  <None Remove="Data\mason_background_2.jpg" />
+	  <None Remove="Data\mason_background_2.png" />
+	  <None Remove="Data\mason_background_2_90.png" />	 
+	  <None Remove="Data\overhead_1161x425.png" />
+	  <None Remove="Data\overhead_1161x4251.png" />
+	  <None Remove="Data\overhead_1161x42511.png" />
+	  <None Remove="Data\overhead_1161x42522.png" />
+	  <None Remove="Data\overhead_600x220.png" />
+	  <None Remove="Data\overhead_600x2201.png" />
+	  <None Remove="Data\overhead_medium.png" />
+	  <None Remove="Resources\Images\arrow_right.png" />
+	  <None Remove="Resources\Images\background_for_blur.png" />
+	  <None Remove="Resources\Images\drone_pu_4_overhead_90.png" />
+	  <None Remove="Resources\Images\drone_pu_4_overhead_view.jpg" />
+	  <None Remove="Resources\Images\drone_pu_4_overhead_view.png" />
+	  <None Remove="Resources\Images\icon.png" />
+	  <None Remove="Resources\Images\ic_account_balance.png" />
+	  <None Remove="Resources\Images\ic_first_page.png" />
+	  <None Remove="Resources\Images\ic_last_page.png" />
+	  <None Remove="Resources\Images\ic_map.png" />
+	  <None Remove="Resources\Images\ic_navigate_before.png" />
+	  <None Remove="Resources\Images\ic_navigate_next.png" />
+	  <None Remove="Resources\Images\initial_startup_grounds.png" />
+	  <None Remove="Resources\Images\initial_startup_grounds_v2_620.png" />
+	  <None Remove="Resources\Images\mason_background_2.jpg" />
+	  <None Remove="Resources\Images\mason_background_2.png" />   
+	  <None Remove="Resources\Images\mason_background_2_90.png" />
+	  <None Remove="Resources\Images\memorial_info_image_1.png" />
+	  <None Remove="Resources\Images\memorial_info_image_2.png" />
+	  <None Remove="Resources\Images\memorial_info_image_3.png" />
+	  <None Remove="Resources\Images\memorial_info_image_4.png" />
+	  <None Remove="Resources\Images\memorial_info_image_5.png" />
+	  <None Remove="Resources\Images\memorial_info_image_6.png" />
+	  <None Remove="Resources\Images\overhead_1161x425.png" />
+	  <None Remove="Resources\Images\overhead_1161x4251.png" />
+	  <None Remove="Resources\Images\overhead_1161x42511.png" />
+	  <None Remove="Resources\Images\overhead_1161x42522.png" />
+	  <None Remove="Resources\Images\overhead_600x220.png" />
+	  <None Remove="Resources\Images\overhead_600x2201.png" />
+	  <None Remove="Resources\Images\overhead_medium.png" />
+	  <None Remove="Resources\Raw\MemorialBricks.csv" />
+	</ItemGroup>-->
+
+	
+	
+
+	<!--<ItemGroup>
+	  <MauiXaml Include="Pages\AboutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Include="Pages\SearchPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Pages\AboutPage.xaml">
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Pages\SearchPage.xaml">
+	    <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>-->
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\Raw\MemorialBricks.csv" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiImage Include="Resources\Images\ic_home.png" />
+		<MauiImage Include="Resources\Images\ic_search.png" />
+		<MauiImage Include="Resources\Images\info.png" />
+		<MauiImage Include="Resources\Images\full_color_gradient_preferred_with_tagline_large.png" />			
+		<MauiImage Include="Resources\Images\arrow_right.png" />
+		<MauiImage Include="Resources\Images\icon.png" />
+		<MauiImage Include="Resources\Images\ic_account_balance.png" />
+		<MauiImage Include="Resources\Images\ic_first_page.png" />
+		<MauiImage Include="Resources\Images\ic_last_page.png" />
+		<MauiImage Include="Resources\Images\ic_map.png" />
+		<MauiImage Include="Resources\Images\ic_navigate_before.png" />
+		<MauiImage Include="Resources\Images\ic_navigate_next.png" />		
+		<MauiImage Include="Resources\Images\memorial_info_image_1.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_2.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_3.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_4.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_5.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_6.png" />		
+		<MauiImage Include="Resources\Images\arrow_right.png" />
+		<MauiImage Include="Resources\Images\background_for_blur.png" />
+		<MauiImage Include="Resources\Images\drone_pu_4_overhead_90.png" />		
+		<MauiImage Include="Resources\Images\drone_pu_4_overhead_view.png" />		
+		<MauiImage Include="Resources\Images\initial_startup_grounds.png" />		
+		<MauiImage Include="Resources\Images\mason_background_2_90.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_1.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_2.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_3.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_4.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_5.png" />
+		<MauiImage Include="Resources\Images\memorial_info_image_6.png" />
+		<MauiImage Include="Resources\Images\overhead_1161x425.png" />
+		<MauiImage Include="Resources\Images\overhead_1161x4251.png" />
+		<MauiImage Include="Resources\Images\overhead_1161x42511.png" />
+		<MauiImage Include="Resources\Images\overhead_1161x42522.png" />
+		<MauiImage Include="Resources\Images\overhead_600x220.png" />
+		<MauiImage Include="Resources\Images\overhead_600x2201.png" />
+		<MauiImage Include="Resources\Images\overhead_medium.png" />
+		<EmbeddedResource Include="Resources\Images\initial_startup_grounds_v2_620.png" />
+		<EmbeddedResource Include="Resources\Images\overhead_1161x425.png" />
+		<EmbeddedResource Include="Resources\Images\mason_background_2.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.6" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Maui.Maps" Version="8.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Utilities" Version="17.8.37221" />
+		<PackageReference Include="SkiaSharp.Views" Version="2.88.6" />		
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.6" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Controls\SkiaSharp\TouchManipulationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+		<MauiXaml Update="Pages\Asap.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	  <MauiXaml Update="Pages\MemorialMapPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+</Project>

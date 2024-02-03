@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom="clr-namespace:MasonVeteransMemorial.Controls;assembly=MasonVeteransMemorial"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls" xmlns:tt="clr-namespace:TouchTracking"
+             x:Class="MasonVeteransMemorial.Pages.SearchPage">
+
+    <!--xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"-->
+    
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="0">
+            <!--<BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+                     Style="{StaticResource TopPageDividerStyle}" BackgroundColor="{StaticResource DefaultBorderColor}" />-->
+            <StackLayout VerticalOptions="Start" HeightRequest="75" Padding="0,5,0,5"
+                         BackgroundColor="White">
+                <Image Source="full_color_gradient_preferred_with_tagline_large.png" HeightRequest="55" VerticalOptions="CenterAndExpand">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLogoClicked" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <SearchBar HorizontalOptions="FillAndExpand" Placeholder="Enter your search text here" IsVisible="false" VerticalOptions="Start" 
+                       Text="{Binding SearchText}" TextChanged="OnSearchTextChanged" SearchButtonPressed="OnSearchButtonPressed" 
+                       SearchCommand="{Binding SearchCommand}"/>
+            <BoxView HeightRequest=".5" HorizontalOptions="FillAndExpand" BackgroundColor="#696969"
+                     Opacity=".6" VerticalOptions="Start" />
+             <!--SEARCH BAR--> 
+            <StackLayout IsVisible="true" BackgroundColor="{StaticResource LightBackgroundColor}" Padding="15,5,15,5">
+                <StackLayout Orientation="Horizontal" Spacing="15">
+                    <Entry Placeholder="Enter your search text here" HorizontalOptions="FillAndExpand" VerticalOptions="Center" 
+                           x:Name="txtSearch" Text="{Binding SearchText}" Focused="OnSearchTextFocused" TextChanged="OnSearchTextChanged"/>
+                    <Button BackgroundColor="LightGray" ImageSource="ic_search" HorizontalOptions="End" VerticalOptions="Center" 
+                            WidthRequest="65" HeightRequest="35" Clicked="OnSearchButtonClicked" />
+                    <Button IsVisible="false" Text="@" HorizontalOptions="End" WidthRequest="25" HeightRequest="25"
+                            VerticalOptions="Center" BackgroundColor="#696969" Clicked="OnShowToolsMenuClicked" />
+                </StackLayout>
+            </StackLayout>
+            <!-- SEARCH LIST RESULTS -->
+            <BoxView HeightRequest=".5" HorizontalOptions="FillAndExpand" BackgroundColor="#696969"
+                     Opacity=".6" VerticalOptions="Start" />
+            <ListView ItemsSource="{Binding BricksFiltered}" ItemSelected="OnSearchItemSelected" x:Name="lvSearchResults"
+                      IsVisible="{Binding IsVisibleSearchResults,Converter={StaticResource Negate}}" VerticalOptions="FillAndExpand"
+                       SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <custom:CustomViewCell SelectedBackgroundColor="{StaticResource SelectedItemColor}">
+                            <StackLayout Orientation="Horizontal" Padding="20,0,20,0">
+                                <Label Text="{Binding CompoundKey}" IsVisible="false" />
+                                <Label Text="{Binding FullName}" HorizontalOptions="Start" TextColor="{StaticResource DefaultLightTextColor}"
+                                       VerticalOptions="Center" />
+                                <Image Source="ic_navigate_next" HeightRequest="24" HorizontalOptions="EndAndExpand"
+                                       VerticalOptions="Center" />
+                            </StackLayout>
+                        </custom:CustomViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <!-- MAIN RESULTS LAYOUT -->
+            <AbsoluteLayout IsVisible="{Binding IsVisibleSearchResults}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <AbsoluteLayout.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Entry">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </Style>
+                        <Style TargetType="Label">
+                            <Setter Property="FontSize" Value="10" />
+                            <Setter Property="TextColor" Value="Black" />
+                            <!--<Setter Property="TextColor" Value="#005a84" />-->
+                        </Style>
+                        <Style TargetType="BoxView">
+                            <Setter Property="BackgroundColor" Value="#696969" />
+                        </Style>
+                        <Style TargetType="Button">
+                            <Setter Property="BackgroundColor" Value="Transparent" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="WidthRequest" Value="70" />
+                            <Setter Property="HorizontalOptions" Value="Center" />
+                            <Setter Property="VerticalOptions" Value="Center" />
+                        </Style>
+                    </ResourceDictionary>
+                </AbsoluteLayout.Resources>
+                <!-- MAIN CANVAS -->
+                <StackLayout x:Name="canvasStaticLayout" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                    <Grid VerticalOptions="FillAndExpand">
+                        <skia:SKCanvasView x:Name="skCanvasStatic" PaintSurface="skCanvasStatic_OnPaintSurface" HorizontalOptions="FillAndExpand"
+                                           VerticalOptions="FillAndExpand" />
+                        <!--<Grid.Effects>
+                            <tt:TouchEffect Capture="True" TouchAction="OnTouchEffectAction" />
+                        </Grid.Effects>-->
+                    </Grid>
+                </StackLayout>
+                <!-- BUTTON BAR -->
+                <StackLayout x:Name="slCanvasButtonBar" Padding="5,0,0,5" IsVisible="false"
+                             Opacity="8" Orientation="Horizontal" AbsoluteLayout.LayoutBounds="0,1,.5,.30"
+                             AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand">
+                    <Button Clicked="ReplayZoom_Clicked" Text="Replay" FontSize="Micro"
+                            HorizontalOptions="Center" BackgroundColor="{StaticResource HeadingTextColor}" TextColor="White"
+                            VerticalOptions="EndAndExpand" BorderColor="Silver" BorderWidth="1"
+                            CornerRadius="7">
+                    </Button>
+                    <Button Clicked="FullZoomOut_Clicked" Text="Full View" FontSize="Micro"
+                            HorizontalOptions="Center" BackgroundColor="{StaticResource HeadingTextColor}" TextColor="White"
+                            VerticalOptions="EndAndExpand" BorderColor="Silver" BorderWidth="1"
+                            CornerRadius="7">
+                    </Button>
+                </StackLayout>
+                <!-- SELECTED BRICK DETAIL -->
+                <StackLayout x:Name="slSelectedBrickDetail" IsVisible="false" Spacing="0"
+                             VerticalOptions="End" BackgroundColor="White" Opacity="0.7"
+                             Padding="0,5,0,5" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="EndAndExpand"
+                             AbsoluteLayout.LayoutBounds="1,1,.5,.23">
+
+
+
+                </StackLayout>
+
+            </AbsoluteLayout>
+
+            <!--Full Map-->
+            <!--<StackLayout Grid.Row="0" BackgroundColor="#d2d2d4" Grid.Column="0"
+                                 VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Spacing="0"
+                                 Padding="5,0,5,0">
+                <Image Source="mason_background_2.jpg" Aspect="Fill" HeightRequest="550" 
+                               VerticalOptions="Start" HorizontalOptions="FillAndExpand" />
+            </StackLayout>-->
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
+    
+<!--<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+             xmlns:custom="clr-namespace:MasonVeteransMemorial.Controls;assembly=MasonVeteransMemorial"
+             xmlns:tt="clr-namespace:TouchTracking"
+             x:Class="MasonVeteransMemorial.Pages.SearchPage">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="0">
+            <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+                     Style="{StaticResource TopPageDividerStyle}" BackgroundColor="{StaticResource DefaultBorderColor}" />
+            <StackLayout VerticalOptions="Start" HeightRequest="75" Padding="0,5,0,5"
+                         BackgroundColor="White">
+                <Image Source="full_color_gradient_preferred_with_tagline_large.png" HeightRequest="55" VerticalOptions="CenterAndExpand">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLogoClicked" />
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            <SearchBar Text="{Binding SearchText}" HorizontalOptions="FillAndExpand" Placeholder="Enter your search text here"
+                       IsVisible="false" TextChanged="OnSearchTextChanged" SearchCommand="{Binding SearchCommand}"
+                       SearchButtonPressed="OnSearchButtonPressed" VerticalOptions="Start" />
+            <BoxView HeightRequest=".5" HorizontalOptions="FillAndExpand" BackgroundColor="#696969"
+                     Opacity=".6" VerticalOptions="Start" />
+             --><!--SEARCH BAR--><!-- 
+            <StackLayout IsVisible="true" BackgroundColor="{StaticResource LightBackgroundColor}" Padding="15,5,15,5">
+                <StackLayout Orientation="Horizontal" Spacing="15">
+                    <Entry Text="{Binding SearchText}" x:Name="txtSearch" Focused="OnSearchTextFocused"
+                           Placeholder="Enter your search text here" TextChanged="OnSearchTextChanged" HorizontalOptions="FillAndExpand"
+                           VerticalOptions="Center" />
+                    <Button Clicked="OnSearchButtonClicked" ImageSource="ic_search" HorizontalOptions="End"
+                            VerticalOptions="Center" />
+                    <Button Clicked="OnShowToolsMenuClicked" IsVisible="false" Text="@"
+                            HorizontalOptions="End" WidthRequest="25" HeightRequest="25"
+                            VerticalOptions="Center" />
+                </StackLayout>
+            </StackLayout>
+             --><!--SEARCH LIST RESULTS--><!-- 
+            <BoxView HeightRequest=".5" HorizontalOptions="FillAndExpand" BackgroundColor="#696969"
+                     Opacity=".6" VerticalOptions="Start" />
+            <ListView ItemsSource="{Binding BricksFiltered}" ItemSelected="OnSearchItemSelected" x:Name="lvSearchResults"
+                      IsVisible="{Binding IsVisibleSearchResults,Converter={StaticResource Negate}}" VerticalOptions="FillAndExpand"
+                       SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <custom:CustomViewCell SelectedBackgroundColor="{StaticResource SelectedItemColor}">
+                            <StackLayout Orientation="Horizontal" Padding="20,0,20,0">
+                                <Label Text="{Binding CompoundKey}" IsVisible="false" />
+                                <Label Text="{Binding FullName}" HorizontalOptions="Start" TextColor="{StaticResource DefaultLightTextColor}"
+                                       VerticalOptions="Center" />
+                                <Image Source="ic_navigate_next" HeightRequest="24" HorizontalOptions="EndAndExpand"
+                                       VerticalOptions="Center" />
+                            </StackLayout>
+                        </custom:CustomViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+             --><!--MAIN RESULTS LAYOUT--><!-- 
+            <AbsoluteLayout IsVisible="{Binding IsVisibleSearchResults}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <AbsoluteLayout.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Entry">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </Style>
+                        <Style TargetType="Label">
+                            <Setter Property="FontSize" Value="10" />
+                            <Setter Property="TextColor" Value="Black" />
+                                                        <Setter Property="TextColor" Value="#005a84" />
+                        </Style>
+                        <Style TargetType="BoxView">
+                            <Setter Property="BackgroundColor" Value="#696969" />
+                        </Style>
+                        <Style TargetType="Button">
+                            <Setter Property="BackgroundColor" Value="Transparent" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="WidthRequest" Value="70" />
+                            <Setter Property="HorizontalOptions" Value="Center" />
+                            <Setter Property="VerticalOptions" Value="Center" />
+                        </Style>
+                    </ResourceDictionary>
+                </AbsoluteLayout.Resources>
+                 --><!--MAIN CANVAS--><!-- 
+                <StackLayout x:Name="canvasStaticLayout" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                    <Grid VerticalOptions="FillAndExpand">
+                        <skia:SKCanvasView x:Name="skCanvasStatic" PaintSurface="skCanvasStatic_OnPaintSurface" HorizontalOptions="FillAndExpand"
+                                           VerticalOptions="FillAndExpand" />
+                        <Grid.Effects>
+                            <tt:TouchEffect Capture="True" TouchAction="OnTouchEffectAction" />
+                        </Grid.Effects>
+                    </Grid>
+                </StackLayout>
+
+                 --><!--BUTTON BAR--><!-- 
+                <StackLayout x:Name="slCanvasButtonBar" Padding="5,0,0,5" IsVisible="false"
+                             Opacity="8" Orientation="Horizontal" AbsoluteLayout.LayoutBounds="0,1,.5,.30"
+                             AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand">
+                    <Button Clicked="ReplayZoom_Clicked" Text="Replay" FontSize="Micro"
+                            HorizontalOptions="Center" BackgroundColor="{StaticResource HeadingTextColor}" TextColor="White"
+                            VerticalOptions="EndAndExpand" BorderColor="Silver" BorderWidth="1"
+                            CornerRadius="7">
+                        <Button.WidthRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">70</On>
+                                <On Platform="Android">80</On>
+                                <On Platform="WinPhone">70</On>
+                            </OnPlatform>
+                        </Button.WidthRequest>
+                    </Button>
+
+                    <Button Clicked="FullZoomOut_Clicked" Text="Full View" FontSize="Micro"
+                            HorizontalOptions="Center" BackgroundColor="{StaticResource HeadingTextColor}" TextColor="White"
+                            VerticalOptions="EndAndExpand" BorderColor="Silver" BorderWidth="1"
+                            CornerRadius="7">
+                        <Button.WidthRequest>
+                            <OnPlatform x:TypeArguments="x:Double">
+                                <On Platform="iOS">70</On>
+                                <On Platform="Android">85</On>
+                                <On Platform="WinPhone">70</On>
+                            </OnPlatform>
+                        </Button.WidthRequest>
+                    </Button>
+                </StackLayout>
+                 --><!--SELECTED BRICK DETAIL--><!-- 
+                <StackLayout x:Name="slSelectedBrickDetail" IsVisible="false" Spacing="0"
+                             VerticalOptions="End" BackgroundColor="White" Opacity="0.7"
+                             Padding="0,5,0,5" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="EndAndExpand"
+                             AbsoluteLayout.LayoutBounds="1,1,.5,.23">
+                    <Label Text="{Binding SelectedBrick.Line1st}" FontAttributes="Bold" HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Center" VerticalOptions="Start" />
+                    <Label Text="{Binding SelectedBrick.Line2nd}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
+                           VerticalOptions="Start" />
+                    <Label Text="{Binding SelectedBrick.Line3rd}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
+                           VerticalOptions="Start" />
+                    <StackLayout Margin="0,0,0,0" Orientation="Horizontal" Spacing="0"
+                                 HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
+                        <Label Margin="0,0,3,0" Text="{Binding SelectedBrick.Section}" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="{Binding SelectedBrick.Location}" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="{Binding SelectedBrick.Position}" FontAttributes="Bold" HorizontalOptions="Center" />
+                    </StackLayout>
+                </StackLayout>
+
+            </AbsoluteLayout>
+
+             --><!--ORIG {Binding IsVisibleSearchResults}--><!--
+            <StackLayout IsVisible="false" VerticalOptions="EndAndExpand" Spacing="0"
+                         Padding="0,0,0,0">
+                <Grid Padding="0,0,0,0" RowSpacing="0" ColumnSpacing="0"
+                      VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        --><!--<RowDefinition>
+                            <RowDefinition.Height>
+                                <OnPlatform x:TypeArguments="GridLength">
+                                    <On Platform="iOS">200*</On>
+                                    <On Platform="Android">190*</On>
+                                    <On Platform="WinPhone">200*</On>
+                                </OnPlatform>
+                            </RowDefinition.Height>
+                        </RowDefinition>
+                        <RowDefinition Height="1" />
+                        <RowDefinition>
+                            <RowDefinition.Height>
+                                <OnPlatform x:TypeArguments="GridLength">
+                                    <On Platform="iOS">300*</On>
+                                    <On Platform="Android">295*</On>
+                                    <On Platform="WinPhone">400*</On>
+                                </OnPlatform>
+                            </RowDefinition.Height>
+                        </RowDefinition>
+                        <RowDefinition Height="1" />--><!--
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="Entry">
+                                <Setter Property="IsEnabled" Value="false" />
+                            </Style>
+                            <Style TargetType="Label">
+                                <Setter Property="FontSize" Value="10" />
+                                <Setter Property="TextColor" Value="Black" />
+                            </Style>
+                            <Style TargetType="BoxView">
+                                <Setter Property="BackgroundColor" Value="#696969" />
+                            </Style>
+                            <Style TargetType="Button">
+                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                <Setter Property="BorderWidth" Value="0" />
+                                <Setter Property="WidthRequest" Value="70" />
+                                <Setter Property="HorizontalOptions" Value="Center" />
+                                <Setter Property="VerticalOptions" Value="Center" />
+                            </Style>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                     --><!--Full Map--><!-- 
+                    <StackLayout Grid.Row="0" BackgroundColor="#d2d2d4" Grid.Column="0"
+                                 VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Spacing="0"
+                                 Padding="5,0,5,0">
+                        <Image Source="VetMemMap_cropped_border" Aspect="Fill" HeightRequest="180"
+                               VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+                    </StackLayout>
+                     --><!--Divider--><!-- 
+                    <StackLayout Grid.Row="1" Grid.Column="0">
+                        <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+                                 Opacity=".7" BackgroundColor="#333333" />
+                    </StackLayout>
+                     --><!--Quadrant Map--><!--  
+                    <StackLayout Grid.Row="2" Grid.Column="0" VerticalOptions="FillAndExpand"
+                                 HorizontalOptions="FillAndExpand" Padding="0,0,0,0" Spacing="0">
+                        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="0,0,0,0">
+                            <StackLayout AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+                                <Image Source="{Binding MapViewModel.FoundQuadrantImageSource}" Aspect="Fill" HorizontalOptions="FillAndExpand"
+                                       VerticalOptions="FillAndExpand" />
+                            </StackLayout>
+                            <StackLayout Spacing="0" VerticalOptions="Start" BackgroundColor="White"
+                                         Opacity=".8" Padding="3" AbsoluteLayout.LayoutFlags="All"
+                                         AbsoluteLayout.LayoutBounds=".98,.015,.30,.28">
+                                <Label Text="{Binding MapViewModel.SelectedBrick.Line1st}" HorizontalOptions="FillAndExpand"
+                                        HorizontalTextAlignment="Center" VerticalOptions="Start" />
+                                <Label Text="{Binding MapViewModel.SelectedBrick.Line2nd}" HorizontalOptions="FillAndExpand"
+                                        HorizontalTextAlignment="Center" VerticalOptions="Start" />
+                                <Label Text="{Binding MapViewModel.SelectedBrick.Line3rd}" HorizontalOptions="FillAndExpand"
+                                        HorizontalTextAlignment="Center" VerticalOptions="Start" />
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
+                                    <Label Margin="0,0,3,0" Text="{Binding MapViewModel.SelectedBrick.Section}" FontAttributes="Bold" HorizontalOptions="Center" />
+                                    <Label Text="{Binding MapViewModel.SelectedBrick.Location}" HorizontalOptions="Center" />
+                                    <Label Text="{Binding MapViewModel.SelectedBrick.Position}" HorizontalOptions="Center" />
+                                </StackLayout>
+                            </StackLayout>
+                        </AbsoluteLayout>
+                    </StackLayout>
+                     --><!--Divider--><!-- 
+                    <StackLayout Grid.Row="3" Grid.Column="0">
+                        <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" Opacity=".7"
+                                 VerticalOptions="Start" />
+                    </StackLayout>
+                </Grid>
+            </StackLayout>          
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>-->
